@@ -1,9 +1,11 @@
 import axios from "axios";
 import AuthService from "./auth.service";
+import authHeader from "./auth-header";
+import { Airport } from "src/types/Airport";
 
-const API_URL = "https://flyit.azurewebsites.net/api/User";
+const API_URL = "https://flyit.azurewebsites.net/api/Airport/";
 
-class UserService {
+class AirportService {
 	private axiosInstance = axios.create();
 
 	constructor() {
@@ -21,6 +23,10 @@ class UserService {
 			},
 		);
 	}
+
+	getAirports() {
+		return this.axiosInstance.get<Array<Airport>>(API_URL, { headers: authHeader() });
+	}
 }
 
-export default new UserService();
+export default new AirportService();
