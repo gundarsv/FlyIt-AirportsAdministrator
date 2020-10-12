@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AuthenticationToken } from "src/types/Auth";
 
-const API_URL = "https://flyit.azurewebsites.net//api/Auth/";
+const API_URL = "https://flyit.azurewebsites.net/api/Auth/";
 
 class AuthService {
 	async singIn(emal: string, password: string) {
