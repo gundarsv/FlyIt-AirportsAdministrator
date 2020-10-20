@@ -6,7 +6,9 @@ import { Airport } from "src/types/Airport";
 import AirportService from "src/services/airport.service";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MaterialTable from "material-table";
+import { News } from "components/news";
 import React from "react";
+import ReceiptIcon from "@material-ui/icons/Receipt";
 import { useSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
 
@@ -14,11 +16,15 @@ const useStyles = makeStyles({
 	container: {
 		paddingTop: 30,
 	},
+	drawer: {
+		width: "80%",
+	},
 });
 
 const Main: React.FC = () => {
 	const [airports, setAirports] = React.useState<Array<Airport>>([]);
 	const [isAddAirportOpen, setIsAddAirportOpen] = React.useState(false);
+	const [isNewsOpen, setIsNewsOpen] = React.useState<{ isOpen: boolean; id: number | undefined }>({ isOpen: false, id: undefined });
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	const classes = useStyles();
@@ -42,6 +48,10 @@ const Main: React.FC = () => {
 		setIsLoading(true);
 		setAirports([...airports, airport]);
 		setIsLoading(false);
+	};
+
+	const handleOpenNews = (airport: Airport) => {
+		setIsNewsOpen({ isOpen: true, id: airport.id });
 	};
 
 	const handleRemoveAirport = (airport: Airport) => {
@@ -92,11 +102,22 @@ const Main: React.FC = () => {
 								setIsAddAirportOpen(true);
 							},
 						},
+						{
+							// eslint-disable-next-line react/display-name
+							icon: () => <ReceiptIcon />,
+							tooltip: "Open news",
+							onClick: (event, rowData) => {
+								handleOpenNews(rowData as Airport);
+							},
+						},
 					]}
 				/>
 			</Container>
 			<Drawer anchor="right" open={isAddAirportOpen} onClose={() => setIsAddAirportOpen(false)}>
 				<AddAirport onAirportAdded={onAirportAdded} />
+			</Drawer>
+			<Drawer classes={{ paper: classes.drawer }} anchor="right" open={isNewsOpen.isOpen} style={{ width: "100%" }} onClose={() => setIsNewsOpen({ isOpen: false, id: undefined })}>
+				{isNewsOpen.isOpen ? <News id={isNewsOpen.id} /> : null}
 			</Drawer>
 		</div>
 	);
