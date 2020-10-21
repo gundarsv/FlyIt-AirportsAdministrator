@@ -3,6 +3,7 @@ import { Button, CircularProgress, createStyles, makeStyles } from "@material-ui
 import { DropzoneDialog } from "material-ui-dropzone";
 import ImageService from "src/services/image.service";
 import React from "react";
+import { useSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
 
 interface ImageUploaderProps {
@@ -22,21 +23,24 @@ const useStyles = makeStyles(theme =>
 const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onUploaded }) => {
 	const [isDropzoneDialogOpen, setIsDropzoneDialogOpen] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(false);
+
 	const classes = useStyles();
+	const snackbar = useSnackbar();
 
 	const uploadImage = (file: File) => {
 		setIsLoading(true);
 
-		ImageService.uploadImage(file, file.name).then(
+		ImageService.uploadImage(file).then(
 			response => {
 				if (response.status === 200) {
-					onUploaded(response.data, file.name);
+					onUploaded(response.data.url, response.data.fileName);
+					snackbar.enqueueSnackbar("Image was uploaded", { variant: "success", autoHideDuration: 2000 });
 				}
 				setIsLoading(false);
 			},
 			error => {
-				console.log(error);
 				setIsLoading(false);
+				snackbar.enqueueSnackbar(error.response.data[0], { variant: "error", autoHideDuration: 2000 });
 			},
 		);
 	};
