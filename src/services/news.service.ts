@@ -33,7 +33,7 @@ class NewsService {
 			API_URL + news.id,
 			{
 				body: news.body,
-				imagename: news.imagename,
+				imageName: news.imageName,
 				imageurl: news.imageurl,
 				title: news.title,
 			},
@@ -46,7 +46,7 @@ class NewsService {
 			API_URL + airportId,
 			{
 				body: news.body,
-				imagename: news.imagename,
+				imageName: news.imageName,
 				imageurl: news.imageurl,
 				title: news.title,
 			},

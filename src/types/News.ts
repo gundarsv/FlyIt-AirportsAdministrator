@@ -4,5 +4,5 @@ export interface News {
 	title: string;
 	body: string;
 	imageurl: string;
-	imagename: string;
+	imageName: string;
 }

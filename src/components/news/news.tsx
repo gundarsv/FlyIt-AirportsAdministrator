@@ -26,6 +26,22 @@ const News: React.FC<NewsProps> = ({ id }) => {
 	const [news, setNews] = React.useState<News[]>([]);
 	const unsavedImages = [];
 
+	const removeAllUnsavedImages = () => {
+		unsavedImages.map(image => {
+			ImageService.deleteImage(image);
+		});
+		unsavedImages.splice(0, unsavedImages.length);
+	};
+
+	const removeAllExceptLatestUnsavedImages = () => {
+		unsavedImages.map((image, index) => {
+			if (index !== unsavedImages.length - 1) {
+				ImageService.deleteImage(image);
+			}
+		});
+		unsavedImages.splice(0, unsavedImages.length);
+	};
+
 	React.useEffect(() => {
 		NewsService.getNewsByAirportId(id).then(
 			response => {
@@ -62,7 +78,7 @@ const News: React.FC<NewsProps> = ({ id }) => {
 						editComponent: props => {
 							const onUploaded = (url: string, fileName: string) => {
 								const newNews = props.rowData;
-								newNews.imagename = fileName;
+								newNews.imageName = fileName;
 								newNews.imageurl = url;
 								unsavedImages.push(fileName);
 								props.onRowDataChange(newNews);
@@ -76,10 +92,7 @@ const News: React.FC<NewsProps> = ({ id }) => {
 				data={news}
 				editable={{
 					onRowUpdateCancelled: () => {
-						unsavedImages.map(image => {
-							ImageService.deleteImage(image);
-						});
-						unsavedImages.splice(0, unsavedImages.length);
+						removeAllUnsavedImages();
 					},
 					onRowAdd: newData => {
 						return NewsService.addNews(newData, id).then(
@@ -88,12 +101,7 @@ const News: React.FC<NewsProps> = ({ id }) => {
 									setNews([...news, response.data]);
 									snackbar.enqueueSnackbar("News - " + response.data.id + " was added", { variant: "success", autoHideDuration: 2000 });
 
-									unsavedImages.map((image, index) => {
-										if (index !== unsavedImages.length - 1) {
-											ImageService.deleteImage(image);
-										}
-									});
-									unsavedImages.splice(0, unsavedImages.length);
+									removeAllExceptLatestUnsavedImages();
 								}
 							},
 							error => {
@@ -115,12 +123,9 @@ const News: React.FC<NewsProps> = ({ id }) => {
 									items[index] = item;
 									setNews(items);
 
-									unsavedImages.map((image, index) => {
-										if (index !== unsavedImages.length - 1) {
-											ImageService.deleteImage(image);
-										}
-									});
-									unsavedImages.splice(0, unsavedImages.length);
+									snackbar.enqueueSnackbar("News - " + response.data.id + " was updated", { variant: "success", autoHideDuration: 2000 });
+
+									removeAllExceptLatestUnsavedImages();
 								}
 							},
 							error => {

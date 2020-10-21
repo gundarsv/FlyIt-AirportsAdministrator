@@ -1,5 +1,5 @@
 import AuthService from "./auth.service";
-import { News } from "src/types/News";
+import { Image } from "src/types/Image";
 import authHeader from "./auth-header";
 import axios from "axios";
 
@@ -24,11 +24,11 @@ class ImageService {
 		);
 	}
 
-	uploadImage(image: File, filename: string) {
+	uploadImage(image: File) {
 		const formData = new FormData();
 		formData.append("image", image);
 
-		return this.axiosInstance.post<string>(API_URL + "?fileName=" + filename, formData, { headers: { "content-type": "multipart/form-data", Authorization: authHeader().Authorization } });
+		return this.axiosInstance.post<Image>(API_URL, formData, { headers: { "content-type": "multipart/form-data", Authorization: authHeader().Authorization } });
 	}
 
 	deleteImage(filename: string) {
