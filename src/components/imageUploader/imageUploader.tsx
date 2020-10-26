@@ -1,7 +1,7 @@
 import { Button, CircularProgress, createStyles, makeStyles } from "@material-ui/core";
 
 import { DropzoneDialog } from "material-ui-dropzone";
-import ImageService from "src/services/image.service";
+import FileService from "src/services/file.service";
 import React from "react";
 import { useSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
@@ -30,7 +30,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ currentImage, onUploaded 
 	const uploadImage = (file: File) => {
 		setIsLoading(true);
 
-		ImageService.uploadImage(file).then(
+		FileService.uploadFile(file).then(
 			response => {
 				if (response.status === 200) {
 					onUploaded(response.data.url, response.data.fileName);

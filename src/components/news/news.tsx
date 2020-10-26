@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import { Container, LinearProgress, makeStyles } from "@material-ui/core";
 import MaterialTable from "material-table";
 import { ImageUploader } from "components/imageUploader";
-import ImageService from "src/services/image.service";
+import FileService from "src/services/file.service";
 
 const useStyles = makeStyles({
 	container: {
@@ -28,7 +28,7 @@ const News: React.FC<NewsProps> = ({ id }) => {
 
 	const removeAllUnsavedImages = () => {
 		unsavedImages.map(image => {
-			ImageService.deleteImage(image);
+			FileService.deleteFile(image);
 		});
 		unsavedImages.splice(0, unsavedImages.length);
 	};
@@ -36,7 +36,7 @@ const News: React.FC<NewsProps> = ({ id }) => {
 	const removeAllExceptLatestUnsavedImages = () => {
 		unsavedImages.map((image, index) => {
 			if (index !== unsavedImages.length - 1) {
-				ImageService.deleteImage(image);
+				FileService.deleteFile(image);
 			}
 		});
 		unsavedImages.splice(0, unsavedImages.length);

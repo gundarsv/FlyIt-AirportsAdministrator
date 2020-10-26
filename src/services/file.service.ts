@@ -1,11 +1,11 @@
 import AuthService from "./auth.service";
-import { Image } from "src/types/Image";
+import { FileDTO } from "src/types/FileDTO";
 import authHeader from "./auth-header";
 import axios from "axios";
 
-const API_URL = "https://flyit.azurewebsites.net/api/Image/";
+const API_URL = "https://flyit.azurewebsites.net/api/File/";
 
-class ImageService {
+class FileService {
 	private axiosInstance = axios.create();
 
 	constructor() {
@@ -24,16 +24,16 @@ class ImageService {
 		);
 	}
 
-	uploadImage(image: File) {
+	uploadFile(file: File) {
 		const formData = new FormData();
-		formData.append("image", image);
+		formData.append("file", file);
 
-		return this.axiosInstance.post<Image>(API_URL, formData, { headers: { "content-type": "multipart/form-data", Authorization: authHeader().Authorization } });
+		return this.axiosInstance.post<FileDTO>(API_URL, formData, { headers: { "content-type": "multipart/form-data", Authorization: authHeader().Authorization } });
 	}
 
-	deleteImage(filename: string) {
+	deleteFile(filename: string) {
 		return this.axiosInstance.delete<string>(API_URL + filename, { headers: authHeader() });
 	}
 }
 
-export default new ImageService();
+export default new FileService();
