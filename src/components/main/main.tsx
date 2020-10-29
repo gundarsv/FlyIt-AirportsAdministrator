@@ -1,4 +1,4 @@
-import { Container, Drawer, LinearProgress, makeStyles } from "@material-ui/core";
+import { Container, Drawer, LinearProgress, Link, makeStyles } from "@material-ui/core";
 
 import { AddAirport } from "components/addAirport";
 import AddIcon from "@material-ui/icons/Add";
@@ -81,6 +81,8 @@ const Main: React.FC = () => {
 						{ title: "Id", field: "id" },
 						{ title: "Iata", field: "iata" },
 						{ title: "Airport Name", field: "name" },
+						// eslint-disable-next-line react/display-name
+						{ title: "Airport Map", field: "mapUrl", render: data => <Link href={data.mapUrl}>View map</Link> },
 					]}
 					options={{ showTitle: false, sorting: true, paging: false, minBodyHeight: 750, maxBodyHeight: 750, actionsColumnIndex: -1 }}
 					data={airports}
@@ -114,7 +116,7 @@ const Main: React.FC = () => {
 				/>
 			</Container>
 			<Drawer anchor="right" open={isAddAirportOpen} onClose={() => setIsAddAirportOpen(false)}>
-				<AddAirport onAirportAdded={onAirportAdded} />
+				<AddAirport onAirportAdded={onAirportAdded} isOpen={isAddAirportOpen} />
 			</Drawer>
 			<Drawer classes={{ paper: classes.drawer }} anchor="right" open={isNewsOpen.isOpen} style={{ width: "100%" }} onClose={() => setIsNewsOpen({ isOpen: false, id: undefined })}>
 				{isNewsOpen.isOpen ? <News id={isNewsOpen.id} /> : null}
