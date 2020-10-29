@@ -32,8 +32,8 @@ class AirportService {
 		return this.axiosInstance.delete<Airport>(API_URL + airportId, { headers: authHeader() });
 	}
 
-	addAirport(iata: string, airportName: string) {
-		return this.axiosInstance.post<Airport>(API_URL, { iata: iata, name: airportName }, { headers: authHeader() });
+	addAirport(iata: string, airportName: string, mapUrl: string, mapName: string) {
+		return this.axiosInstance.post<Airport>(API_URL, { iata: iata, name: airportName, mapUrl: mapUrl, mapName: mapName }, { headers: authHeader() });
 	}
 }
 

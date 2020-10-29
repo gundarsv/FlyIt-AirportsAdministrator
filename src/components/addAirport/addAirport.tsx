@@ -1,4 +1,4 @@
-import { Button, CircularProgress, List, ListItem, ListItemIcon, TextField, makeStyles } from "@material-ui/core";
+import { Button, CircularProgress, List, ListItem, ListItemIcon, TextField, makeStyles, Link, Typography, ButtonGroup } from "@material-ui/core";
 
 import { Airport } from "src/types/Airport";
 import AirportService from "src/services/airport.service";
@@ -6,26 +6,40 @@ import Divider from "@material-ui/core/Divider";
 import React from "react";
 import { useSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
+import { DropzoneDialog } from "material-ui-dropzone";
+import { FormHelperText } from "@material-ui/core";
+import FileService from "src/services/file.service";
 
 const useStyles = makeStyles({
 	list: {
 		width: 450,
 	},
+	previewChip: {
+		minWidth: 160,
+		maxWidth: 210,
+	},
 });
 
 export interface AddAiportProps {
 	onAirportAdded: (airport: Airport) => void;
+	isOpen: boolean;
 }
 
-const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded }) => {
+const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 	const classes = useStyles();
 	const snackbar = useSnackbar();
+	const [isDropzoneDialogOpen, setIsDropzoneDialogOpen] = React.useState(false);
+	const [isMapAdded, setIsMapAdded] = React.useState(false);
+	const [unsavedFiles, setUnsavedFiles] = React.useState([]);
 
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [iata, setIata] = React.useState("");
 	const [iataError, setIataError] = React.useState("");
 	const [airportName, setAirportName] = React.useState("");
 	const [airportNameError, setAirportNameError] = React.useState("");
+	const [mapUrl, setMapUrl] = React.useState("");
+	const [mapName, setMapName] = React.useState("");
+	const [mapError, setMapError] = React.useState("");
 
 	const handleAddAirport = () => {
 		if (isError()) {
@@ -33,10 +47,11 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded }) => {
 		}
 
 		setIsLoading(true);
-		AirportService.addAirport(iata, airportName).then(
+		AirportService.addAirport(iata, airportName, mapUrl, mapName).then(
 			response => {
 				if (response.status === 201) {
 					setIsLoading(false);
+					setUnsavedFiles([]);
 					onAirportAdded(response.data);
 					snackbar.enqueueSnackbar("Airport - " + response.data.iata + " was added", { variant: "success", autoHideDuration: 2000 });
 				}
@@ -48,11 +63,95 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded }) => {
 		);
 	};
 
+	React.useEffect(() => {
+		if (!isOpen) {
+			if (unsavedFiles.length > 0) {
+				FileService.deleteFile(unsavedFiles.pop());
+				setUnsavedFiles([]);
+			}
+		}
+	}, [isOpen, unsavedFiles, setUnsavedFiles]);
+
+	const removeMap = () => {
+		setIsLoading(true);
+
+		FileService.deleteFile(mapName).then(
+			response => {
+				if (response.status === 200) {
+					setIsMapAdded(false);
+					setMapName("");
+					setMapUrl("");
+					setUnsavedFiles([]);
+					snackbar.enqueueSnackbar("Map was uploaded", { variant: "success", autoHideDuration: 2000 });
+				}
+				setIsLoading(false);
+			},
+			error => {
+				setIsLoading(false);
+				snackbar.enqueueSnackbar(error.response.data[0], { variant: "error", autoHideDuration: 2000 });
+			},
+		);
+	};
+
+	const uploadMap = (file: File) => {
+		setIsLoading(true);
+
+		FileService.uploadFile(file).then(
+			response => {
+				if (response.status === 200) {
+					setMapUrl(response.data.url);
+					setMapName(response.data.fileName);
+					setMapError("");
+					setIsMapAdded(true);
+					setUnsavedFiles([...unsavedFiles, response.data.fileName]);
+					snackbar.enqueueSnackbar("Map was removed", { variant: "success", autoHideDuration: 2000 });
+				}
+				setIsLoading(false);
+			},
+			error => {
+				setIsLoading(false);
+				snackbar.enqueueSnackbar(error.response.data[0], { variant: "error", autoHideDuration: 2000 });
+			},
+		);
+	};
+
+	const renderAddMap = () => {
+		return (
+			<ListItem style={mapError !== "" ? { display: "flow-root" } : {}}>
+				<Button
+					variant={mapError !== "" ? "outlined" : "text"}
+					aria-describedby="map-helper-text"
+					style={mapError !== "" ? { color: "red", border: "1px solid red" } : {}}
+					onClick={() => setIsDropzoneDialogOpen(true)}
+					fullWidth>
+					Add Map
+				</Button>
+				{mapError !== "" ? (
+					<FormHelperText style={{ marginLeft: 14, marginRight: 14 }} id="map-helper-text" disabled={mapError === ""} error={mapError !== ""}>
+						{mapError}
+					</FormHelperText>
+				) : null}
+			</ListItem>
+		);
+	};
+
+	const renderRemoveMap = () => {
+		return (
+			<ListItem>
+				<ButtonGroup fullWidth variant="contained" color="primary">
+					<Button href={mapUrl}>View Map</Button>
+					<Button onClick={() => removeMap()}>Remove Map</Button>
+				</ButtonGroup>
+			</ListItem>
+		);
+	};
+
 	const isError = (): boolean => {
 		!iata ? setIataError("Add Iata") : setIataError("");
 		!airportName ? setAirportNameError("Add Airport name") : setAirportNameError("");
+		!mapName || !mapUrl ? setMapError("Upload Airport map") : setMapError("");
 
-		return !iata || !airportName;
+		return !iata || !airportName || !mapUrl || !mapName;
 	};
 
 	return (
@@ -86,6 +185,7 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded }) => {
 								variant="outlined"
 							/>
 						</ListItem>
+						{isMapAdded ? renderRemoveMap() : renderAddMap()}
 					</List>
 					<Divider />
 					<List>
@@ -95,6 +195,26 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded }) => {
 							</Button>
 						</ListItem>
 					</List>
+
+					<DropzoneDialog
+						open={isDropzoneDialogOpen}
+						dialogTitle={"Upload Airport Map"}
+						onSave={(files, event) => {
+							uploadMap(files[0]);
+							setIsDropzoneDialogOpen(false);
+						}}
+						acceptedFiles={["application/pdf"]}
+						dropzoneText={"Drag and drop an airport map file here or click"}
+						showPreviews={true}
+						filesLimit={1}
+						maxFileSize={5000000}
+						showPreviewsInDropzone={false}
+						useChipsForPreview
+						previewGridProps={{ container: { spacing: 1, direction: "row" } }}
+						previewChipProps={{ classes: { root: classes.previewChip } }}
+						previewText="Selected files"
+						onClose={() => setIsDropzoneDialogOpen(false)}
+					/>
 				</div>
 			)}
 		</div>
