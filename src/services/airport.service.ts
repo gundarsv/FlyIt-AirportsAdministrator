@@ -32,8 +32,20 @@ class AirportService {
 		return this.axiosInstance.delete<Airport>(API_URL + airportId, { headers: authHeader() });
 	}
 
-	addAirport(iata: string, airportName: string, mapUrl: string, mapName: string) {
-		return this.axiosInstance.post<Airport>(API_URL, { iata: iata, name: airportName, mapUrl: mapUrl, mapName: mapName }, { headers: authHeader() });
+	addAirport(iata: string, airportName: string, mapUrl: string, mapName: string, rentingCompanyName: string, rentingCompanyUrl: string, rentingCompanyPhoneNo: string) {
+		return this.axiosInstance.post<Airport>(
+			API_URL,
+			{
+				iata: iata,
+				name: airportName,
+				mapUrl: mapUrl,
+				mapName: mapName,
+				rentingCompanyName: rentingCompanyName,
+				rentingCompanyUrl: rentingCompanyUrl,
+				rentingCompanyPhoneNo: rentingCompanyPhoneNo,
+			},
+			{ headers: authHeader() },
+		);
 	}
 }
 
