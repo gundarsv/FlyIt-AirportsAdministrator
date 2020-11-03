@@ -83,6 +83,9 @@ const Main: React.FC = () => {
 						{ title: "Airport Name", field: "name" },
 						// eslint-disable-next-line react/display-name
 						{ title: "Airport Map", field: "mapUrl", render: data => <Link href={data.mapUrl}>View map</Link> },
+						{ title: "Renting Company Name", field: "rentingCompanyName" },
+						{ title: "Renting Company Url", field: "rentingCompanyUrl" },
+						{ title: "Renting Company Phone Number", field: "rentingCompanyPhoneNo" },
 					]}
 					options={{ showTitle: false, sorting: true, paging: false, minBodyHeight: 750, maxBodyHeight: 750, actionsColumnIndex: -1 }}
 					data={airports}

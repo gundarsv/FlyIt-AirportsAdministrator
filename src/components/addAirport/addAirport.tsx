@@ -1,14 +1,14 @@
-import { Button, CircularProgress, List, ListItem, ListItemIcon, TextField, makeStyles, Link, Typography, ButtonGroup } from "@material-ui/core";
+import { Button, ButtonGroup, CircularProgress, Link, List, ListItem, ListItemIcon, TextField, Typography, makeStyles } from "@material-ui/core";
 
 import { Airport } from "src/types/Airport";
 import AirportService from "src/services/airport.service";
 import Divider from "@material-ui/core/Divider";
+import { DropzoneDialog } from "material-ui-dropzone";
+import FileService from "src/services/file.service";
+import { FormHelperText } from "@material-ui/core";
 import React from "react";
 import { useSnackbar } from "notistack";
 import { withRouter } from "react-router-dom";
-import { DropzoneDialog } from "material-ui-dropzone";
-import { FormHelperText } from "@material-ui/core";
-import FileService from "src/services/file.service";
 
 const useStyles = makeStyles({
 	list: {
@@ -40,6 +40,12 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 	const [mapUrl, setMapUrl] = React.useState("");
 	const [mapName, setMapName] = React.useState("");
 	const [mapError, setMapError] = React.useState("");
+	const [rentingCompanyUrl, setRentingCompanyUrl] = React.useState("");
+	const [rentingCompanyUrlError, setRentingCompanyUrlError] = React.useState("");
+	const [rentingCompanyPhoneNo, setRentingCompanyPhoneNo] = React.useState("");
+	const [rentingCompanyPhoneNoError, setRentingCompanyPhoneNoError] = React.useState("");
+	const [rentingCompanyName, setRentingCompanyName] = React.useState("");
+	const [rentingCompanyNameError, setRentingCompanyNameError] = React.useState("");
 
 	const handleAddAirport = () => {
 		if (isError()) {
@@ -47,7 +53,7 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		}
 
 		setIsLoading(true);
-		AirportService.addAirport(iata, airportName, mapUrl, mapName).then(
+		AirportService.addAirport(iata, airportName, mapUrl, mapName, rentingCompanyName, rentingCompanyUrl, rentingCompanyPhoneNo).then(
 			response => {
 				if (response.status === 201) {
 					setIsLoading(false);
@@ -150,8 +156,11 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		!iata ? setIataError("Add Iata") : setIataError("");
 		!airportName ? setAirportNameError("Add Airport name") : setAirportNameError("");
 		!mapName || !mapUrl ? setMapError("Upload Airport map") : setMapError("");
+		!rentingCompanyName ? setRentingCompanyNameError("Add renting company name") : setRentingCompanyNameError("");
+		!rentingCompanyUrl ? setRentingCompanyUrlError("Add renting company url") : setRentingCompanyUrlError("");
+		!rentingCompanyPhoneNo ? setRentingCompanyPhoneNoError("Add renting company phone number") : setRentingCompanyPhoneNoError("");
 
-		return !iata || !airportName || !mapUrl || !mapName;
+		return !iata || !airportName || !mapUrl || !mapName || !rentingCompanyName || !rentingCompanyUrl || !rentingCompanyPhoneNo;
 	};
 
 	return (
@@ -182,6 +191,42 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 								onChange={event => setAirportName(event.target.value)}
 								fullWidth
 								label="Airport Name"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								type="text"
+								error={rentingCompanyNameError !== ""}
+								helperText={rentingCompanyNameError !== "" ? rentingCompanyNameError : null}
+								value={rentingCompanyName}
+								onChange={event => setRentingCompanyName(event.target.value)}
+								fullWidth
+								label="Renting company name"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								type="url"
+								error={rentingCompanyUrlError !== ""}
+								helperText={rentingCompanyUrlError !== "" ? rentingCompanyUrlError : null}
+								value={rentingCompanyUrl}
+								onChange={event => setRentingCompanyUrl(event.target.value)}
+								fullWidth
+								label="Renting company url"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								type="tel"
+								error={rentingCompanyPhoneNoError !== ""}
+								helperText={rentingCompanyPhoneNoError !== "" ? rentingCompanyPhoneNoError : null}
+								value={rentingCompanyPhoneNo}
+								onChange={event => setRentingCompanyPhoneNo(event.target.value)}
+								fullWidth
+								label="Renting company phone number"
 								variant="outlined"
 							/>
 						</ListItem>

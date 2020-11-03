@@ -6,5 +6,8 @@ export interface Airport {
 	name: string;
 	mapUrl: string;
 	mapName: string;
+	rentingCompanyUrl: string;
+	rentingCompanyName: string;
+	rentingCompanyPhoneNo: string;
 	news: News[];
 }
