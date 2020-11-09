@@ -86,6 +86,8 @@ const Main: React.FC = () => {
 						{ title: "Renting Company Name", field: "rentingCompanyName" },
 						{ title: "Renting Company Url", field: "rentingCompanyUrl" },
 						{ title: "Renting Company Phone Number", field: "rentingCompanyPhoneNo" },
+						{ title: "Taxi Phone Numbers", field: "taxiPhoneNo" },
+						{ title: "Emergency Phone Numbers", field: "emergencyPhoneNo" },
 					]}
 					options={{ showTitle: false, sorting: true, paging: false, minBodyHeight: 750, maxBodyHeight: 750, actionsColumnIndex: -1 }}
 					data={airports}
