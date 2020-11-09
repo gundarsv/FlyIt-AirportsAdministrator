@@ -46,6 +46,10 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 	const [rentingCompanyPhoneNoError, setRentingCompanyPhoneNoError] = React.useState("");
 	const [rentingCompanyName, setRentingCompanyName] = React.useState("");
 	const [rentingCompanyNameError, setRentingCompanyNameError] = React.useState("");
+	const [taxiPhoneNo, setTaxiPhoneNo] = React.useState("");
+	const [taxiPhoneNoError, setTaxiPhoneNoError] = React.useState("");
+	const [emergencyPhoneNo, setEmergencyPhoneNo] = React.useState("");
+	const [emergencyPhoneNoError, setEmergencyPhoneNoError] = React.useState("");
 
 	const handleAddAirport = () => {
 		if (isError()) {
@@ -53,7 +57,7 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		}
 
 		setIsLoading(true);
-		AirportService.addAirport(iata, airportName, mapUrl, mapName, rentingCompanyName, rentingCompanyUrl, rentingCompanyPhoneNo).then(
+		AirportService.addAirport(iata, airportName, mapUrl, mapName, rentingCompanyName, rentingCompanyUrl, rentingCompanyPhoneNo, taxiPhoneNo, emergencyPhoneNo).then(
 			response => {
 				if (response.status === 201) {
 					setIsLoading(false);
@@ -159,8 +163,10 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		!rentingCompanyName ? setRentingCompanyNameError("Add renting company name") : setRentingCompanyNameError("");
 		!rentingCompanyUrl ? setRentingCompanyUrlError("Add renting company url") : setRentingCompanyUrlError("");
 		!rentingCompanyPhoneNo ? setRentingCompanyPhoneNoError("Add renting company phone number") : setRentingCompanyPhoneNoError("");
+		!taxiPhoneNo ? setTaxiPhoneNoError("Add taxi phone number") : setTaxiPhoneNoError("");
+		!emergencyPhoneNo ? setEmergencyPhoneNoError("Add emergency phone number") : setEmergencyPhoneNoError("");
 
-		return !iata || !airportName || !mapUrl || !mapName || !rentingCompanyName || !rentingCompanyUrl || !rentingCompanyPhoneNo;
+		return !iata || !airportName || !mapUrl || !mapName || !rentingCompanyName || !rentingCompanyUrl || !rentingCompanyPhoneNo || !emergencyPhoneNo || !taxiPhoneNo;
 	};
 
 	return (
@@ -227,6 +233,30 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 								onChange={event => setRentingCompanyPhoneNo(event.target.value)}
 								fullWidth
 								label="Renting company phone number"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								type="tel"
+								error={emergencyPhoneNoError !== ""}
+								helperText={taxiPhoneNoError !== "" ? taxiPhoneNoError : null}
+								value={taxiPhoneNo}
+								onChange={event => setTaxiPhoneNo(event.target.value)}
+								fullWidth
+								label="Taxi Phone Number"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								type="tel"
+								error={emergencyPhoneNoError !== ""}
+								helperText={emergencyPhoneNoError !== "" ? emergencyPhoneNoError : null}
+								value={emergencyPhoneNo}
+								onChange={event => setEmergencyPhoneNo(event.target.value)}
+								fullWidth
+								label="Emergency Phone Number"
 								variant="outlined"
 							/>
 						</ListItem>

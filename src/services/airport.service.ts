@@ -32,7 +32,17 @@ class AirportService {
 		return this.axiosInstance.delete<Airport>(API_URL + airportId, { headers: authHeader() });
 	}
 
-	addAirport(iata: string, airportName: string, mapUrl: string, mapName: string, rentingCompanyName: string, rentingCompanyUrl: string, rentingCompanyPhoneNo: string) {
+	addAirport(
+		iata: string,
+		airportName: string,
+		mapUrl: string,
+		mapName: string,
+		rentingCompanyName: string,
+		rentingCompanyUrl: string,
+		rentingCompanyPhoneNo: string,
+		taxiPhoneNo: string,
+		emergencyPhoneNo: string,
+	) {
 		return this.axiosInstance.post<Airport>(
 			API_URL,
 			{
@@ -43,6 +53,8 @@ class AirportService {
 				rentingCompanyName: rentingCompanyName,
 				rentingCompanyUrl: rentingCompanyUrl,
 				rentingCompanyPhoneNo: rentingCompanyPhoneNo,
+				taxiPhoneNo: taxiPhoneNo,
+				emergencyPhoneNo: emergencyPhoneNo,
 			},
 			{ headers: authHeader() },
 		);

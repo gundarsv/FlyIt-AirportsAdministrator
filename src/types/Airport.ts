@@ -9,5 +9,6 @@ export interface Airport {
 	rentingCompanyUrl: string;
 	rentingCompanyName: string;
 	rentingCompanyPhoneNo: string;
-	news: News[];
+	taxiPhoneNo: string;
+	emergencyPhoneNo: string;
 }
