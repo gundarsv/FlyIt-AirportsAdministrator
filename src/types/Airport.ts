@@ -11,4 +11,5 @@ export interface Airport {
 	rentingCompanyPhoneNo: string;
 	taxiPhoneNo: string;
 	emergencyPhoneNo: string;
+	icao: string;
 }

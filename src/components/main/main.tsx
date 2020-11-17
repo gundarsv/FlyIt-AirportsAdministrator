@@ -100,6 +100,7 @@ const Main: React.FC = () => {
 					columns={[
 						{ title: "Id", field: "id", editable: "never" },
 						{ title: "Iata", field: "iata" },
+						{ title: "Icao", field: "icao" },
 						{ title: "Airport Name", field: "name" },
 						// eslint-disable-next-line react/display-name
 						{
