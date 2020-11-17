@@ -50,6 +50,8 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 	const [taxiPhoneNoError, setTaxiPhoneNoError] = React.useState("");
 	const [emergencyPhoneNo, setEmergencyPhoneNo] = React.useState("");
 	const [emergencyPhoneNoError, setEmergencyPhoneNoError] = React.useState("");
+	const [icao, setIcao] = React.useState("");
+	const [icaoError, setIcaoError] = React.useState("");
 
 	const handleAddAirport = () => {
 		if (isError()) {
@@ -57,7 +59,7 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		}
 
 		setIsLoading(true);
-		AirportService.addAirport(iata, airportName, mapUrl, mapName, rentingCompanyName, rentingCompanyUrl, rentingCompanyPhoneNo, taxiPhoneNo, emergencyPhoneNo).then(
+		AirportService.addAirport(iata, airportName, mapUrl, mapName, rentingCompanyName, rentingCompanyUrl, rentingCompanyPhoneNo, taxiPhoneNo, emergencyPhoneNo, icao).then(
 			response => {
 				if (response.status === 201) {
 					setIsLoading(false);
@@ -114,7 +116,7 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 					setMapError("");
 					setIsMapAdded(true);
 					setUnsavedFiles([...unsavedFiles, response.data.fileName]);
-					snackbar.enqueueSnackbar("Map was removed", { variant: "success", autoHideDuration: 2000 });
+					snackbar.enqueueSnackbar("Map was uploaded", { variant: "success", autoHideDuration: 2000 });
 				}
 				setIsLoading(false);
 			},
@@ -165,8 +167,9 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 		!rentingCompanyPhoneNo ? setRentingCompanyPhoneNoError("Add renting company phone number") : setRentingCompanyPhoneNoError("");
 		!taxiPhoneNo ? setTaxiPhoneNoError("Add taxi phone number") : setTaxiPhoneNoError("");
 		!emergencyPhoneNo ? setEmergencyPhoneNoError("Add emergency phone number") : setEmergencyPhoneNoError("");
+		!icao ? setIcaoError("Add Icao") : setIcaoError("");
 
-		return !iata || !airportName || !mapUrl || !mapName || !rentingCompanyName || !rentingCompanyUrl || !rentingCompanyPhoneNo || !emergencyPhoneNo || !taxiPhoneNo;
+		return !iata || !airportName || !mapUrl || !mapName || !rentingCompanyName || !rentingCompanyUrl || !rentingCompanyPhoneNo || !emergencyPhoneNo || !taxiPhoneNo || !icao;
 	};
 
 	return (
@@ -186,6 +189,17 @@ const AddAirport: React.FC<AddAiportProps> = ({ onAirportAdded, isOpen }) => {
 								onChange={event => setIata(event.target.value)}
 								fullWidth
 								label="Iata"
+								variant="outlined"
+							/>
+						</ListItem>
+						<ListItem>
+							<TextField
+								error={icaoError !== ""}
+								helperText={icaoError !== "" ? icaoError : null}
+								value={icao}
+								onChange={event => setIcao(event.target.value)}
+								fullWidth
+								label="Icao"
 								variant="outlined"
 							/>
 						</ListItem>

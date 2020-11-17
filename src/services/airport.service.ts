@@ -45,6 +45,7 @@ class AirportService {
 				rentingCompanyPhoneNo: airport.rentingCompanyPhoneNo,
 				taxiPhoneNo: airport.taxiPhoneNo,
 				emergencyPhoneNo: airport.emergencyPhoneNo,
+				icao: airport.icao,
 			},
 			{ headers: authHeader() },
 		);
@@ -60,6 +61,7 @@ class AirportService {
 		rentingCompanyPhoneNo: string,
 		taxiPhoneNo: string,
 		emergencyPhoneNo: string,
+		icao: string,
 	) {
 		return this.axiosInstance.post<Airport>(
 			API_URL,
@@ -73,6 +75,7 @@ class AirportService {
 				rentingCompanyPhoneNo: rentingCompanyPhoneNo,
 				taxiPhoneNo: taxiPhoneNo,
 				emergencyPhoneNo: emergencyPhoneNo,
+				icao: icao,
 			},
 			{ headers: authHeader() },
 		);
